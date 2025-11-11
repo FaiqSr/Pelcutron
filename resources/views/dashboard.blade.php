@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Dashboard – E‑shrimp</title>
@@ -122,6 +123,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+=======
+>>>>>>> a5f30bdb649415f4c8df1024e3625130eca19df0
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>

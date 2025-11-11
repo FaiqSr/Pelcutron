@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
 	<title>E‑shrimp – Smart Shrimp Farming</title>
 	<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 	@vite(['resources/css/app.css','resources/js/app.js'])
@@ -293,5 +294,11 @@
 		document.getElementById('y').textContent = new Date().getFullYear();
 		</script>
 	</footer>
+=======
+    <title>Document</title>
+</head>
+<body>
+    <h1>tes</h1>
+>>>>>>> a5f30bdb649415f4c8df1024e3625130eca19df0
 </body>
 </html>
