@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
 	<title>E‑shrimp – Smart Shrimp Farming</title>
 	<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 	@vite(['resources/css/app.css','resources/js/app.js'])
@@ -13,7 +12,7 @@
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 py-4 flex items-center justify-between">
 			<div class="flex items-center gap-3">
 				<div class="h-6 w-6 rounded bg-zinc-900"></div>
-				<span class="font-semibold">E‑Shrimp</span>
+				<span class="font-semibold">Pelcutron</span>
 			</div>
 			<nav class="hidden md:flex items-center gap-6 text-sm">
 				<a href="#features" class="hover:text-zinc-900 text-zinc-600">Features</a>
@@ -36,7 +35,7 @@
 						<span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
 						Empowering Smart Shrimp Farming
 					</div>
-					<h1 class="text-4xl sm:text-5xl font-semibold tracking-tight">Automate <span class="text-zinc-500 font-normal">Monitoring with</span> E‑shrimp System</h1>
+					<h1 class="text-4xl sm:text-5xl font-semibold tracking-tight">Automate <span class="text-zinc-500 font-normal">Monitoring with</span> Pelcutron System</h1>
 					<p class="text-zinc-600 max-w-xl">Real‑time pond metrics, anomaly alerts, and insights to maximize growth and reduce risk—powered by our IoT monitoring boat and integrated dashboard.</p>
 					<div class="flex flex-wrap gap-3">
 						<button class="px-5 py-2 rounded-full bg-zinc-900 text-white hover:bg-zinc-800 text-sm">Request Demo</button>
@@ -294,11 +293,5 @@
 		document.getElementById('y').textContent = new Date().getFullYear();
 		</script>
 	</footer>
-=======
-    <title>Document</title>
-</head>
-<body>
-    <h1>tes</h1>
->>>>>>> a5f30bdb649415f4c8df1024e3625130eca19df0
 </body>
 </html>

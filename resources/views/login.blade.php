@@ -14,7 +14,7 @@
 				<div class="mb-8">
 					<div class="inline-flex items-center gap-2">
 						<div class="h-6 w-6 rounded bg-zinc-900"></div>
-						<span class="font-semibold">E‑Shrimp</span>
+						<span class="font-semibold">Pelcutron</span>
 					</div>
 				</div>
 				<div class="rounded-2xl bg-white/70 backdrop-blur p-6 shadow-sm border border-zinc-200">

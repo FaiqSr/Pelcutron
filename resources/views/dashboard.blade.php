@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<<<<<<< HEAD
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Dashboard – E‑shrimp</title>
@@ -15,7 +14,7 @@
 			<button id="openSidebarBtn" class="px-3 py-2 rounded-lg border border-zinc-300 text-sm">Menu</button>
 			<div class="flex items-center gap-2">
 				<div class="h-6 w-6 rounded bg-zinc-900"></div>
-				<div class="font-semibold">E‑SHRIMP</div>
+				<div class="font-semibold">Pelcutron</div>
 			</div>
 			<a href="/" class="px-3 py-2 rounded-lg border border-zinc-300 text-sm">Logout</a>
 		</div>
@@ -25,7 +24,7 @@
 			class="col-span-12 md:col-span-2 border-r border-zinc-200 bg-zinc-50 p-4 md:block hidden fixed inset-y-0 left-0 w-72 z-40 md:static md:w-auto">
 			<div class="flex items-center gap-2 mb-6">
 				<div class="h-6 w-6 rounded bg-zinc-900"></div>
-				<div class="font-semibold">E‑SHRIMP</div>
+				<div class="font-semibold">Pelcutron</div>
 			</div>
 			<nav class="space-y-1 text-sm">
 				<a href="#" class="block px-3 py-2 rounded-lg bg-white border border-zinc-200 font-medium">Dashboard</a>
@@ -123,8 +122,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-=======
->>>>>>> a5f30bdb649415f4c8df1024e3625130eca19df0
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
