@@ -6,45 +6,53 @@ Route::get('/', function () {
     return view('landingpage');
 });
 
-Route::get('/login', function () {
-    return view('login');
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\LogoutController;
+
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'show'])->name('login');
+    Route::post('/login', [LoginController::class, 'login'])->name('login.post');
+    Route::get('/register', [RegisterController::class, 'show'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register'])->name('register.post');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-});
+Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 
-Route::get('/dashboard-history', function () {
-    return view('dashboard-history');
-});
+use App\Models\Alat;
 
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        $alats = Alat::where('user_id', auth()->user()->id)->get();
 
-// ========== REALTIME DATA ==========
-Route::get('/data-realtime', function () {
-    return response()->json([
-        'rpm' => rand(900, 1500),
-        'berat' => rand(10, 40) / 10,
-        'watt' => rand(60, 120),
-        'rupiah' => rand(200, 600),
-    ]);
-});
-
-
-// ========== HISTORY REALTIME ==========
-Route::get('/history-realtime', function () {
-
-    // contoh generate data dummy 10 baris
-    $history = [];
-
-    for ($i = 0; $i < 10; $i++) {
-        $history[] = [
-            'timestamp' => now()->subSeconds($i * 3)->format('Y-m-d H:i:s'),
-            'rpm' => rand(900, 1500),
-            'berat' => rand(10, 40) / 10,
-            'watt' => rand(60, 120),
-            'rupiah' => rand(200, 600),
+        $firebase = [
+            'apiKey' => env('FIREBASE_API_KEY'),
+            'authDomain' => env('FIREBASE_AUTH_DOMAIN'),
+            'databaseURL' => env('FIREBASE_DATABASE_URL'),
+            'projectId' => env('FIREBASE_PROJECT_ID'),
+            'storageBucket' => env('FIREBASE_STORAGE_BUCKET'),
+            'messagingSenderId' => env('FIREBASE_MESSAGING_SENDER_ID'),
+            'appId' => env('FIREBASE_APP_ID'),
+            'measurementId' => env('FIREBASE_MEASUREMENT_ID'),
         ];
-    }
 
-    return response()->json($history);
+        return view('dashboard', compact('alats', 'firebase'));
+    });
+
+    Route::get('/dashboard-history', function () {
+        $alats = Alat::where('user_id', auth()->user()->id)->get();
+
+        $firebase = [
+            'apiKey' => env('FIREBASE_API_KEY'),
+            'authDomain' => env('FIREBASE_AUTH_DOMAIN'),
+            'databaseURL' => env('FIREBASE_DATABASE_URL'),
+            'projectId' => env('FIREBASE_PROJECT_ID'),
+            'storageBucket' => env('FIREBASE_STORAGE_BUCKET'),
+            'messagingSenderId' => env('FIREBASE_MESSAGING_SENDER_ID'),
+            'appId' => env('FIREBASE_APP_ID'),
+            'measurementId' => env('FIREBASE_MEASUREMENT_ID'),
+        ];
+        return view('dashboard-history', compact('alats', 'firebase'));
+    });
 });
+
