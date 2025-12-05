@@ -401,8 +401,10 @@
 
                 function buildFromSnapshot(snapshot) {
                     const raw = snapshot.val() || {};
+                    console.log('=== buildFromSnapshot raw data:', raw);
                     const keys = Object.keys(raw).filter(k => !Number.isNaN(Number(k))).sort((a, b) => Number(a) - Number(
                         b));
+                    console.log('=== Filtered numeric keys found:', keys.length, 'keys:', keys);
                     const pts = keys.map(k => {
                         const v = raw[k] || {};
                         return {
@@ -412,6 +414,7 @@
                             watt: Number(v.watt) || null
                         };
                     });
+                    console.log('=== Data points built:', pts);
                     dataPoints = pts;
 
                     // fill charts
@@ -518,6 +521,7 @@
                 }
 
                 function subscribeToAlat(alatId, alatName) {
+                    console.log('=== subscribeToAlat called with alatId:', alatId, 'alatName:', alatName);
                     // cleanup
                     if (historyRef) {
                         try {
@@ -536,18 +540,46 @@
                     if (!chartRPM) initializeCharts();
                     resetBuffers();
 
-                    const path = `data/${alatId}`;
+                    // First, explore root to see structure
+                    db.ref('/').once('value', rootSnap => {
+                        console.log('=== ROOT STRUCTURE:', Object.keys(rootSnap.val() || {}));
+                    });
 
-                    // fetch last-hour history
+                    const path = `data/${alatId}`;
+                    console.log('=== Subscribing to path:', path);
+
+                    // Check if path exists first
+                    db.ref(path).once('value', snapshot => {
+                        console.log('=== Path "' + path + '" exists:', snapshot.exists());
+                        if (snapshot.exists()) {
+                            const pathData = snapshot.val();
+                            console.log('=== Content of "' + path + '":', pathData);
+                            console.log('=== Keys inside "' + path + '":', Object.keys(pathData || {}));
+                        } else {
+                            console.log('=== Path is empty. Checking other possible paths...');
+                            // Try alternative paths
+                            db.ref('data').once('value', dataSnap => {
+                                const dataKeys = Object.keys(dataSnap.val() || {});
+                                console.log('=== Available alat IDs in "data":', dataKeys);
+                            });
+                        }
+                    });
+
+                    // fetch realtime data with on('value')
                     const startKey = String(Math.floor(Date.now() / 1000) - 3600);
-                    historyRef = db.ref(path).orderByKey().startAt(startKey);
-                    historyRef.once('value', snapshot => {
+                    console.log('=== Using startKey:', startKey, '(epoch seconds ~1 hour ago)');
+                    // Listen for all data changes in realtime
+                    historyRef = db.ref(path);
+                    console.log('=== Listening to realtime data from path (no time filter for now)');
+                    historyRef.on('value', snapshot => {
+                        console.log('=== Realtime snapshot received, has value:', snapshot.exists());
                         buildFromSnapshot(snapshot);
                     });
 
-                    // live updates (new child added)
-                    liveRef = db.ref(path).limitToLast(1);
+                    // Also listen for new child additions (bonus for new entries)
+                    liveRef = db.ref(path);
                     liveRef.on('child_added', snap => {
+                        console.log('=== New child added:', snap.key);
                         const k = snap.key;
                         const v = snap.val() || {};
                         const point = {
@@ -557,6 +589,16 @@
                             watt: Number(v.watt) || null
                         };
                         appendLivePoint(point);
+                    });
+
+                    // Listen for changes on existing children
+                    liveRef.on('child_changed', snap => {
+                        console.log('=== Child changed:', snap.key);
+                        // Rebuild from scratch when data changes
+                        historyRef.off();
+                        historyRef.on('value', snapshot => {
+                            buildFromSnapshot(snapshot);
+                        });
                     });
 
                     // show monitor area
