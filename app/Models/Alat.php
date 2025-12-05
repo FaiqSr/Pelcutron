@@ -23,6 +23,7 @@ class Alat extends Model
      */
     protected $fillable = [
         'nama',
+        'serial_id',
         'type',
         'kwh',
     ];

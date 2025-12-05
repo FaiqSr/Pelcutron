@@ -253,9 +253,7 @@
         };
     </script>
 
-    <!-- CHART + REALTIME FETCH -->
     <script>
-        // Firebase config object injected from server (.env)
         const FIREBASE_CONFIG = @json($firebase ?? []);
     </script>
 
