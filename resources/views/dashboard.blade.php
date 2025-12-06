@@ -196,14 +196,12 @@
         <div class="bg-white rounded-2xl p-6 w-80 shadow-xl border border-zinc-200">
             <h2 class="text-lg font-semibold mb-4">Input Pengaturan Mesin</h2>
 
-            <label class="text-sm text-zinc-700">Set Mode RPM</label>
-            <select id="modalRPM" class="mt-1 w-full px-3 py-2 border border-zinc-300 rounded-lg">
-                <option value="">Pilih Level RPM</option>
-                <option value="800">Level 1 – 800 RPM</option>
-                <option value="1000">Level 2 – 1000 RPM</option>
-                <option value="1200">Level 3 – 1200 RPM</option>
-                <option value="1400">Level 4 – 1400 RPM</option>
-            </select>
+            <label class="text-sm text-zinc-700">Set Mode PWM (0-255)</label>
+            <div class="mt-1 w-full px-3 py-2 border border-zinc-300 rounded-lg flex items-center gap-3">
+                <input type="range" id="modalPWM" min="0" max="255" value="0" class="flex-1"
+                    oninput="document.getElementById('pwmValueDisplay').textContent = this.value">
+                <div class="w-14 text-right text-sm font-medium"> <span id="pwmValueDisplay">0</span></div>
+            </div>
 
             <label class="text-sm text-zinc-700 mt-4 block">Target Berat Pelet (Kg)</label>
             <input type="number" id="modalBerat" class="mt-1 w-full px-3 py-2 border border-zinc-300 rounded-lg"
@@ -239,19 +237,7 @@
     </script>
 
     <!-- MODAL JS -->
-    <script>
-        const modal = document.getElementById("modalSetting");
-        document.getElementById("openSettingBtn").onclick = () => modal.classList.remove("hidden");
-        document.getElementById("closeSettingBtn").onclick = () => modal.classList.add("hidden");
 
-        document.getElementById("saveSettingBtn").onclick = () => {
-            const rpm = document.getElementById("modalRPM").value;
-            const berat = document.getElementById("modalBerat").value;
-
-            alert("Setting disimpan!\nRPM: " + rpm + "\nBerat: " + berat);
-            modal.classList.add("hidden");
-        };
-    </script>
 
     <script>
         const FIREBASE_CONFIG = @json($firebase ?? []);
@@ -271,6 +257,9 @@
             try {
                 firebase.initializeApp(window.FIREBASE_CONFIG);
                 const db = firebase.database();
+                // expose db and current alat id to global scope for modal handlers
+                window.db = db;
+                window.currentAlatId = null;
 
                 // chart instances
                 let chartRPM = null,
@@ -522,6 +511,12 @@
 
                 function subscribeToAlat(alatId, alatName) {
                     console.log('=== subscribeToAlat called with alatId:', alatId, 'alatName:', alatName);
+                    // remember current alat id for settings modal
+                    try {
+                        window.currentAlatId = String(alatId);
+                    } catch (e) {
+                        window.currentAlatId = null;
+                    }
                     // cleanup
                     if (historyRef) {
                         try {
@@ -626,6 +621,7 @@
                     resetBuffers();
                     const currentAlatEl = document.getElementById('currentAlat');
                     currentAlatEl && (currentAlatEl.textContent = 'Tidak ada');
+                    window.currentAlatId = null;
                     const monitorArea = document.getElementById('monitorArea');
                     monitorArea && monitorArea.classList.add('hidden');
                 }
@@ -641,6 +637,60 @@
 
                 const stopBtn = document.getElementById('stopMonitoringBtn');
                 stopBtn && stopBtn.addEventListener('click', stopMonitoring);
+
+                // Modal settings handlers (uses window.db and window.currentAlatId)
+                const modal = document.getElementById("modalSetting");
+                const openSettingBtn = document.getElementById("openSettingBtn");
+                const closeSettingBtn = document.getElementById("closeSettingBtn");
+                const saveSettingBtn = document.getElementById("saveSettingBtn");
+                const modalPWM = document.getElementById("modalPWM");
+                const modalBerat = document.getElementById("modalBerat");
+
+                openSettingBtn && openSettingBtn.addEventListener('click', async () => {
+                    const aid = window.currentAlatId;
+                    if (!aid) {
+                        alert('Pilih alat terlebih dahulu untuk mengatur setting.');
+                        return;
+                    }
+                    // prefill modal from Firebase if available
+                    try {
+                        const snap = await db.ref(`tools_value/${aid}`).once('value');
+                        const val = snap.val() || {};
+                        modalPWM && (modalPWM.value = (val.pwm !== undefined && val.pwm !== null) ? val.pwm :
+                            0);
+                        modalBerat && (modalBerat.value = (val.threshold !== undefined && val.threshold !==
+                            null) ? val.threshold : modalBerat.value);
+                        // update display
+                        const display = document.getElementById('pwmValueDisplay');
+                        display && (display.textContent = modalPWM.value);
+                    } catch (err) {
+                        console.warn('Failed to fetch tools_value for prefill', err);
+                    }
+                    modal && modal.classList.remove('hidden');
+                });
+
+                closeSettingBtn && closeSettingBtn.addEventListener('click', () => modal && modal.classList.add('hidden'));
+
+                saveSettingBtn && saveSettingBtn.addEventListener('click', async () => {
+                    const aid = window.currentAlatId;
+                    if (!aid) {
+                        alert('Tidak ada alat yang dipilih. Pilih alat sebelum menyimpan pengaturan.');
+                        return;
+                    }
+                    const pwm = Number(modalPWM ? modalPWM.value : 0);
+                    const threshold = Number(modalBerat ? modalBerat.value : 0);
+                    try {
+                        await db.ref(`tools_value/${aid}`).set({
+                            pwm: pwm,
+                            threshold: threshold
+                        });
+                        alert('Setting berhasil disimpan ke Firebase.');
+                        modal && modal.classList.add('hidden');
+                    } catch (err) {
+                        console.error('Failed to save settings to Firebase', err);
+                        alert('Gagal menyimpan setting. Cek console untuk detail.');
+                    }
+                });
 
             } catch (err) {
                 console.error('Firebase init error', err);

@@ -17,7 +17,8 @@
             <div class="w-full max-w-md">
                 <div class="mb-8">
                     <div class="inline-flex items-center gap-2">
-                        <img src="/image/logo-eshrimp.png" alt="Logo" class="h-7 w-7 object-contain rounded" />
+                        <img src="{{ url('/image/Pelcutron_Logo_Mark.png') }}" alt="Logo"
+                            class="h-7 w-7 object-contain rounded" />
                         <span class="font-semibold text-2xl">Pelcutron</span>
                     </div>
                 </div>
@@ -51,10 +52,11 @@
                 <div class="max-w-xl text-center">
                     <div class="text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight">Pelcutron</div>
                     <div class="text-zinc-700 mt-1 text-base md:text-lg">The best monitoring system</div>
-                    <div class="mt-4 mb-4 aspect-[16/10] rounded-2xl overflow-hidden shadow-lg">
-                        <video src="/image/e-shrimp-simulation.mp4" class="w-full h-full object-cover" autoplay muted
+                    <div class="mt-4 mb-4  rounded-2xl overflow-hidden">
+                        {{-- <video src="/image/e-shrimp-simulation.mp4" class="w-full h-full object-cover" autoplay muted
                             loop>
-                        </video>
+                        </video> --}}
+                        <img src="{{ url('image/Pelcutron_Logo_Type.png') }}" alt="">
                     </div>
                     <div class="mt-4 grid grid-cols-2 gap-3 text-sm text-zinc-700">
                         <ul class="space-y-2">
